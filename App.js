@@ -16,7 +16,6 @@ import Register from './Views/Register';
 import Service from './Views/Service';
 
 
-
 const App = () => {
   let [view,setView]=useState(<OpenAPP/>)
   useEffect(async ()=>{
@@ -74,12 +73,9 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
   return (
     
-    <>
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView>
-        {view}
-      </SafeAreaView>
-    </>
+     <View>
+       {view}
+     </View>
   );
 };
 
