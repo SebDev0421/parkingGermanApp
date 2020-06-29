@@ -77,6 +77,10 @@ target 'parkingApp' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+
+
+  pod 'RNWifi', :path => '../node_modules/react-native-wifi'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing
