@@ -12,10 +12,11 @@ import{
 
 
 
-import wifi from 'react-native-android-wifi';
 
-import DrawMaps from './DrawMaps'
-import Features from './features'
+
+
+import DrawMaps from './DrawMaps';
+import Features from './features';
 
 const connectAP = (socket)=>{
     socket.on('open', function() {

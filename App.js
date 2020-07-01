@@ -6,7 +6,8 @@ import {
   View,
   Text,
   StatusBar,
-  PermissionsAndroid
+  PermissionsAndroid,
+  Button
 } from 'react-native';
 
 
@@ -15,10 +16,14 @@ import OpenAPP from './Views/OpenAPP';
 import Register from './Views/Register';
 import Service from './Views/Service';
 
+let count = 0
+
+
 
 const App = () => {
   let [view,setView]=useState(<OpenAPP/>)
   useEffect(async ()=>{
+    console.disableYellowBox = true
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
@@ -44,7 +49,7 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         service()
       }}
     />)},2000)
-
+    
     function login(){
       setView(<Login
         openRegister={()=>{

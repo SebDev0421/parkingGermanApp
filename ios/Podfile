@@ -81,6 +81,10 @@ target 'parkingApp' do
 
   pod 'RNWifi', :path => '../node_modules/react-native-wifi'
 
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+
+  pod 'RNNotificationBanner', :path => '../node_modules/react-native-notification-banner'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing
