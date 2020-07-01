@@ -11,16 +11,60 @@ import{
 import wifi from 'react-native-android-wifi';
 
 import BackgroundTimer from 'react-native-background-timer';
+import jwt from "react-native-pure-jwt";
+
 
 import { FloatingAction } from "react-native-floating-action"
 import { cos } from 'react-native-reanimated';
 
 
+function processData(data){
+  const token = JSON.parse(data) 
+  console.log(token)
+  jwt.decode(
+    token.data.code,
+    '12345678',
+    {
+      skipValidation: true // to skip signature and exp verification
+    }
+  ).then(async (e)=>{
+    const date = new Date()
+    const parameters= JSON.stringify({status:'[ACTIVE]',hourInit:date.getHours(),minuteInit:date.getMinutes(),tariff:65,lot:e.building,address:e.address_one})
+    try{
+        await AsyncStorage.setItem('services',parameters)
+    }catch(error){
+        console.log(error)
+    }
+  }) // already an object. read below, exp key note
+  .catch(console.error);
+}
+
 function connectedWebSocket(){
-  const ws = new WebSocket('ws://192.168.4.1:8999/')
+  const ws = new WebSocket('ws://192.168.4.1:8900/')
   console.log('Connecting to socket...')
   ws.addEventListener('open',()=>{
         console.log('conected')
+        ws.send(JSON.stringify({
+          type: 'init_connect_static',
+          data: { idn: 'ece61316a220' }
+      }))
+  })
+
+  ws.addEventListener('message',(data)=>{
+    processData(data.data)
+    const date = new Date()
+    const mytm=date.getTime()/1000;
+    ws.send(JSON.stringify({
+	    type: 'entrada',
+	    data: {
+		   idn: "ece61316a219",
+		   plate: 'XLK789',
+		   start_date: mytm,
+	     user_id: "ece61316-a219-48d2-b0e4-61e1fce25f4d",
+	     start_service_type: 100
+	}
+  }))
+    
   })
 }
 
@@ -41,17 +85,8 @@ const PrymaryView = (props)=>{
                             wifi.findAndConnect(values.SSID,'12345678',async (found)=>{
                                 if(found){
                                     
-                                     setTimeout(()=>{connectedWebSocket() },2000)
-                                    const date = new Date()
-                                    const parameters= JSON.stringify({status:'[ACTIVE]',hourInit:date.getHours(),minuteInit:date.getMinutes(),tariff:300,lot:'Paqueadero Centro mayor',address:'cra 18 #32-47 sur'}) 
-                                    props.Parameters(parameters)
-                                    try{
-                                      await AsyncStorage.setItem('services',parameters)
-                                    }catch(e){
-                                      console.log(e)
-                                    }
-                                    
-                                    
+                                     setTimeout(()=>{connectedWebSocket()},2000)
+                      
                                 }else{
                                     console.log('wifi is not in range')
                                 }
@@ -111,7 +146,6 @@ const Clocks = (props)=>{
                                     }catch(e){
                                       console.log(e)
                                     }
-                                    
                                     console.log('Wifi is in range')
                                     props.Pay()
                                     
@@ -170,35 +204,34 @@ const Features = ()=>{
     }
 
     function openPrymary(){
-        setRefresh(<PrymaryView
-          Parameters={(data)=>{
-            OpenClokc(data)
-          }}
-        />)
+        setRefresh(<PrymaryView/>)
       
     }
 
 
     BackgroundTimer.setInterval(async()=>{
+      
       const parameters = await AsyncStorage.getItem('services')
       const parametersParse = JSON.parse(parameters)
       const dateActual = new Date()
       const hoursActual = dateActual.getHours()
       const minutesActual = dateActual.getMinutes()
       if(parameters !== null){
-       const dhB = (hoursActual)-(parametersParse.hourInit)
-       const dmB = (minutesActual)-(parametersParse.minuteInit)
-       const cB = (dhB*60+dmB)*parametersParse.tariff
-      
+       const dhB = (hoursActual*100+minutesActual)-(parametersParse.hourInit*100+parametersParse.minuteInit)
+       const hourTime = parseInt(dhB/100)
+       const minutesTime = parseInt(((dhB/100)-hourTime)*100)
+       const cB = parseInt((hourTime*60+minutesTime)*parametersParse.tariff)
        setRefresh(<Clocks
-        hour={dhB}
-        minutes={dmB}
+        hour={hourTime}
+        minutes={minutesTime}
         cost={cB}
         Pay={()=>{
           openPrymary()
           
        }}
        />)
+      }else{
+        openPrymary()
       }
     },1000)
   },[])

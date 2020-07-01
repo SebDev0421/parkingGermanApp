@@ -85,6 +85,8 @@ target 'parkingApp' do
 
   pod 'RNNotificationBanner', :path => '../node_modules/react-native-notification-banner'
 
+  pod 'react-native-pure-jwt', :path => '../node_modules/react-native-pure-jwt'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing
