@@ -15,6 +15,7 @@ import Login from './Views/Login';
 import OpenAPP from './Views/OpenAPP';
 import Register from './Views/Register';
 import Service from './Views/Service';
+import Steps from './Views/Steps'
 
 let count = 0
 
@@ -40,15 +41,7 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 } else {
     // Permission denied
 }
-    setTimeout(()=>{setView(<Login
-      openRegister={()=>{
-        register()
-      }}
-
-      openService={()=>{
-        service()
-      }}
-    />)},2000)
+    setTimeout(()=>{login()},2000)
     
     function login(){
       setView(<Login
@@ -56,7 +49,7 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
          register()
         }}
         openService={()=>{
-          service()
+          steps()
         }}
       />)
     }
@@ -71,6 +64,14 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
     function service(){
       setView(<Service/>)
+    }
+
+    function steps(){
+      setView(<Steps
+       OpenService={()=>{
+         setView(<Service/>)
+       }}
+      />)
     }
 
     

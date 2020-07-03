@@ -10,13 +10,13 @@ import{
 
 import wifi from 'react-native-android-wifi';
 
+import FloatingButton from '../Components/FloatingButton';
 import BackgroundTimer from 'react-native-background-timer';
 import jwt from "react-native-pure-jwt";
 
-
-import { FloatingAction } from "react-native-floating-action"
 import { cos } from 'react-native-reanimated';
 
+import OpenMenu from '../Components/OpenMenu'
 
 function processData(data){
   const token = JSON.parse(data) 
@@ -101,10 +101,11 @@ const PrymaryView = (props)=>{
             </TouchableOpacity>
             </View>
             </View>
-            <View
-             style={styles.Floating}
-            >
-            
+            <View style={styles.Floating}>
+             <FloatingButton/>
+            </View>
+            <View style={{position:'absolute',top:15,left:40}}>
+             <OpenMenu/>
             </View>
             </View>
   )
@@ -134,11 +135,8 @@ const Clocks = (props)=>{
             <View>
             <TouchableOpacity
              onPress={async()=>{
-                wifi.loadWifiList((WifiList)=>{
-                    const ArrayWiFi = JSON.parse(WifiList)
-                    ArrayWiFi.map((values)=>{
-                        if(values.SSID === "NidooAP"){
-                            wifi.findAndConnect(values.SSID,'12345678',async (found)=>{
+             
+              wifi.findAndConnect("NidooAP",'12345678',async (found)=>{
                                 if(found){
                                     const date = new Date()
                                     try{
@@ -151,11 +149,14 @@ const Clocks = (props)=>{
                                     
                                 }else{
                                     console.log('wifi is not in range')
+                                    try{
+                                      await AsyncStorage.setItem('services','')
+                                    }catch(e){
+                                      console.log(e)
+                                    }
+                                    props.Pay()
                                 }
                             })
-                        }
-                    })    
-                },(err)=>{console.log(err)})
              }}
              style={styles.buttonPay}
             >
@@ -237,6 +238,7 @@ const Features = ()=>{
   },[])
     return(
         <View>
+          
           {refrehs}
         </View>
     )
@@ -246,7 +248,7 @@ const styles = StyleSheet.create({
     ContainerButton:{
         alignItems:'center',
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height
+        height: Dimensions.get('window').height,
     },
     ButtonLogin:{
         width:Dimensions.get('window').width*0.8,
@@ -270,8 +272,8 @@ const styles = StyleSheet.create({
     },
     Floating:{
       position:'absolute',
-      bottom:65,
-      right:0
+      bottom:170,
+      right:55,
     },
     RadiusWallp:{
       width:Dimensions.get('window').width,

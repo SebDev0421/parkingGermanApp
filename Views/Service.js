@@ -11,18 +11,8 @@ import{
 } from 'react-native';
 
 
-
-
-
-
 import DrawMaps from './DrawMaps';
 import Features from './features';
-
-const connectAP = (socket)=>{
-    socket.on('open', function() {
-        console.log('connected');
-    })
-}
 
 const BottomTab = (props)=>{
   let [tabBut,setTabBut] = useState(true)
@@ -38,7 +28,7 @@ const BottomTab = (props)=>{
       >
         <Image 
         style={{width:30,height:30}} 
-        source={require('../Images/acceso.png')}/>
+        source={require('../Images/parque.png')}/>
         <Text>Descubre</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -50,7 +40,8 @@ const BottomTab = (props)=>{
       >
         <Image 
         style={{width:30,height:30}} 
-        source={require('../Images/3d.png')}/>
+
+        source={require('../Images/acceso.png')}/>
         <Text>Accede</Text>
       </TouchableOpacity>
   </View>
@@ -62,6 +53,7 @@ const Service=()=> {
   let [views, setView] = useState(<Features/>)
     return (
       <View>
+        
         {views}
         <BottomTab
          screen={(data)=>{
