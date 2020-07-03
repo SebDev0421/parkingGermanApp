@@ -11,8 +11,10 @@ import{
 } from 'react-native';
 
 
+import MenuDrawer from '../Components/MenuDrawer';
 import DrawMaps from './DrawMaps';
 import Features from './features';
+import OpenMenu from '../Components/OpenMenu';
 
 const BottomTab = (props)=>{
   let [tabBut,setTabBut] = useState(true)
@@ -35,7 +37,9 @@ const BottomTab = (props)=>{
        style={[styles.buttonsTab,tabBut ? styles.lineSelect : styles.lineunselect]}
        onPress={()=>{
          setTabBut(true)
-         props.screen(<Features/>)
+         props.screen(<Features
+          
+         />)
        }}
       >
         <Image 
@@ -51,6 +55,8 @@ const BottomTab = (props)=>{
   
 const Service=()=> {
   let [views, setView] = useState(<Features/>)
+  let [menuDrawer,setMenuDrawer] = useState()
+
     return (
       <View>
         
@@ -60,6 +66,17 @@ const Service=()=> {
           setView(data) 
          }}
         />
+        <View style={{position:'absolute',top:15,left:40}}>
+             <OpenMenu
+               Open={()=>{
+                 setMenuDrawer(<MenuDrawer
+                  children={()=>{ setMenuDrawer('')}}
+                 />)
+               }}
+             />
+            </View>   
+        {menuDrawer}
+
       </View>
     );
   }
@@ -96,7 +113,6 @@ const styles = StyleSheet.create({
       top:Dimensions.get('window').height-90,
       width:Dimensions.get('window').width,
       height:70,
-      elevation:1,
       flexDirection:'row',
       justifyContent:'center',
       alignItems:'center',

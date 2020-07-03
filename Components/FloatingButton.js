@@ -77,7 +77,7 @@ export default class FloatingButton extends React.Component{
                  }}
                 >
                     <Animated.View style={[styles.Button,styles.secondary,thomStyle,opacity]}>
-                        <Image source={require('../Images/3d.png')} style={{width:10,height:10}}/>
+                        <Image source={require('../Images/reserva.png')} style={{width:25,height:25}}/>
                     </Animated.View>
                 </TouchableWithoutFeedback>
 

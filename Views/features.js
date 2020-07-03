@@ -16,7 +16,7 @@ import jwt from "react-native-pure-jwt";
 
 import { cos } from 'react-native-reanimated';
 
-import OpenMenu from '../Components/OpenMenu'
+
 
 function processData(data){
   const token = JSON.parse(data) 
@@ -104,9 +104,7 @@ const PrymaryView = (props)=>{
             <View style={styles.Floating}>
              <FloatingButton/>
             </View>
-            <View style={{position:'absolute',top:15,left:40}}>
-             <OpenMenu/>
-            </View>
+             
             </View>
   )
 }
@@ -170,17 +168,9 @@ const Clocks = (props)=>{
 
 
 
-const Features = ()=>{
+const Features = (props)=>{
   let [refrehs, setRefresh] = useState()
   useEffect(()=>{
-    /* const status = await AsyncStorage.getItem('services')
-    console.log(status)
-    if(status !== null){
-      OpenClokc(status)
-    }else{
-      openPrymary()
-    }
- */
     function OpenClokc(data){
       
     if(data !== null){

@@ -14,18 +14,17 @@ export default class OpenMenu extends React.Component{
 
     animation = new Animated.Value(0)
 
-
     render(){
 
         const opacity= this.animation.interpolate({
             inputRange: [0, 0.5, 1],
             outputRange: [0, 0 ,1]
         })
-
         return(
             <View style={[styles.container]}>
                 <TouchableWithoutFeedback
                  onPress={()=>{
+                     this.props.Open()
                  }}
                 >
                     <Animated.View style={[styles.Button,styles.secondary]}>
