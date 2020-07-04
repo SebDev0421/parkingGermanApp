@@ -88,7 +88,7 @@ export default class MenuDrawer extends React.Component{
                   style={styles.button}
                   onPress={()=>{
                       this.toogleMenu()
-                      setTimeout(()=>{EventEmitter.emit('Open','History')},500)
+                      setTimeout(()=>{EventEmitter.emit('Open','History')},200)
                   }}
                  >
                    <Text>Historial</Text>  

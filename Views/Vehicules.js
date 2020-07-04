@@ -11,65 +11,21 @@ import{
 
 import EventEmitter from "react-native-eventemitter";
 import CardHistory from '../Components/CardHistory';
+import CardVehicule from '../Components/CardVehicule';
 
 const DataHistory=[{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
+    Placa:'xlc789',
+    Tipo:'Carro',
+    marca:'Chevrolet'
 },{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
+    Placa:'dfc761',
+    Tipo:'Carro',
+    marca:'Renult'
 },
 {
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',    
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
-},{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
-},{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
-},{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
-},
-{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',    
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
-},{
-    ParkName:'Parqueadero Plaza imperial',
-    Address:'Cra 97-87',
-    Time:'1h 2m',
-    tariff:40,
-    cost:2000,
-    placa:'xlc789'
+    Placa:'tye65t',
+    Tipo:'Moto',
+    marca:'Honda'
 }]
 
 const Vehicules = ()=>{
@@ -85,24 +41,31 @@ const Vehicules = ()=>{
                  <Image source={require('../Images/espalda.png')} style={style.ButonBack}/>
              </TouchableOpacity>
              <View style={{width:'100%',marginHorizontal:30}}>
-               <Text style={style.textHeader}>Historial recibos</Text>
+               <Text style={style.textHeader}>Vehiculos</Text>
              </View>
             </View>
             <View style={style.scrollHistory}>
             <ScrollView >
                 {DataHistory.map(data=>{
                     return(
-                        <CardHistory
-                         nameParking={data.ParkName}
-                         address={data.Address}
-                         Time = {data.Time}
-                         tariff = {data.tariff}
-                         cost = {data.cost}
-                         placa = {data.placa}
+                        <CardVehicule
+                         placa={data.Placa}
+                         type={data.Tipo}
+                         marca = {data.marca}
                         />
                     )
                 })}
             </ScrollView>
+            </View>
+            <View style={style.containerButtonAdd}>
+            <TouchableOpacity
+             style={style.buttonAdd}
+            >
+                <View style={{flexDirection:'row'}}>
+                  <Text style={style.textButtonAdd}>Agregar vehiculo</Text>
+                  <Image source={require('../Images/mas.png')} style={{width:20,height:20,marginHorizontal:10}}/>
+                </View>
+            </TouchableOpacity>
             </View>
         </View>
     )
@@ -140,7 +103,25 @@ const style = StyleSheet.create({
     },
     scrollHistory:{
         alignItems:'center',
-        height:Dimensions.get('window').height-100
+        height:Dimensions.get('window').height-170
+    },
+    containerButtonAdd:{
+        justifyContent:'center',
+        alignItems:'center',
+        width:'100%',
+    },
+    buttonAdd:{
+        width:'80%',
+        height:50,
+        borderRadius:10,
+        backgroundColor:'#770BC2',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    textButtonAdd:{
+        fontSize:17,
+        fontWeight:'bold',
+        color:'white'
     }
 })
 

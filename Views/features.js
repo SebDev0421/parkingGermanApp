@@ -16,11 +16,13 @@ import jwt from "react-native-pure-jwt";
 
 import { cos } from 'react-native-reanimated';
 
+let flag = 0
 
 
-function processData(data){
+async function processData(data){
   const token = JSON.parse(data) 
   console.log(token)
+  if(flag === 0){
   jwt.decode(
     token.data.code,
     '12345678',
@@ -37,6 +39,15 @@ function processData(data){
     }
   }) // already an object. read below, exp key note
   .catch(console.error);
+  
+  }else if(flag === 1){
+    console.log(token.data.id)
+    try{
+      await AsyncStorage.setItem('idPark',token.data.id)
+    }catch(e){
+      console.log(e)
+    }
+  }
 }
 
 function connectedWebSocket(){
@@ -51,21 +62,66 @@ function connectedWebSocket(){
   })
 
   ws.addEventListener('message',(data)=>{
-    processData(data.data)
+    try{
+      processData(data.data)
+    }catch(e){
+      console.log(e)
+    }
     const date = new Date()
     const mytm=date.getTime()/1000;
-    ws.send(JSON.stringify({
-	    type: 'entrada',
-	    data: {
-		   idn: "ece61316a219",
-		   plate: 'XLK789',
-		   start_date: mytm,
-	     user_id: "ece61316-a219-48d2-b0e4-61e1fce25f4d",
-	     start_service_type: 100
-	}
-  }))
-    
+    if(flag === 0){
+      console.log('flag control')
+      ws.send(JSON.stringify({
+        type: 'entrada',
+        data: {
+         idn: "ece61316a219",
+         plate: 'XLK789',
+         start_date: mytm,
+         user_id: "ece61316-a219-48d2-b0e4-61e1fce25f4d",
+         start_service_type: 100
+    }
+    }))
+     flag ++
+    }
+    else if(flag === 1){
+      ws.close()
+      flag++
+    }else if(flag === 2){
+      EventOutput(ws)
+    }
   })
+}
+
+async function EventOutput(ws) {
+  let date=new Date(), mytm=date.getTime()/1000;
+  try{
+    await AsyncStorage.setItem('services','')
+
+  }catch(e){
+    console.log(e)
+  }
+  try{
+    const id = await AsyncStorage.getItem('idPark')
+    console.log(id)
+     ws.send(JSON.stringify({
+      type: 'salida',
+      data: {
+              idn: "ece61316a219",
+              id: id,
+              price: 1000,
+              end_date: mytm,
+              end_service_type: 100
+      }
+      }));
+      
+      ws.close()
+
+  }catch(e){
+    console.log(e)
+  }
+
+  
+  
 }
 
 const PrymaryView = (props)=>{
@@ -78,22 +134,14 @@ const PrymaryView = (props)=>{
             <View>
             <TouchableOpacity
              onPress={async()=>{
-                wifi.loadWifiList((WifiList)=>{
-                    const ArrayWiFi = JSON.parse(WifiList)
-                    ArrayWiFi.map((values)=>{
-                        if(values.SSID === "NidooAP"){
-                            wifi.findAndConnect(values.SSID,'12345678',async (found)=>{
-                                if(found){
-                                    
-                                     setTimeout(()=>{connectedWebSocket()},2000)
-                      
-                                }else{
-                                    console.log('wifi is not in range')
-                                }
-                            })
-                        }
-                    })    
-                },(err)=>{console.log(err)})
+              wifi.findAndConnect('NidooAP','12345678',async (found)=>{
+                if(found){
+                     flag = 0
+                     setTimeout(()=>{connectedWebSocket()},2000)
+      
+                }else{
+                    console.log('wifi is not in range')
+                }})
              }}
              style={styles.ButtonLogin}
             >
@@ -137,13 +185,8 @@ const Clocks = (props)=>{
               wifi.findAndConnect("NidooAP",'12345678',async (found)=>{
                                 if(found){
                                     const date = new Date()
-                                    try{
-                                      await AsyncStorage.setItem('services','')
-                                    }catch(e){
-                                      console.log(e)
-                                    }
                                     console.log('Wifi is in range')
-                                    props.Pay()
+                                    setTimeout(()=>{connectedWebSocket()},2000) 
                                     
                                 }else{
                                     console.log('wifi is not in range')
@@ -152,7 +195,6 @@ const Clocks = (props)=>{
                                     }catch(e){
                                       console.log(e)
                                     }
-                                    props.Pay()
                                 }
                             })
              }}
@@ -216,10 +258,6 @@ const Features = (props)=>{
         hour={hourTime}
         minutes={minutesTime}
         cost={cB}
-        Pay={()=>{
-          openPrymary()
-          
-       }}
        />)
       }else{
         openPrymary()

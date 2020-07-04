@@ -16,7 +16,7 @@ import DrawMaps from './DrawMaps';
 import Features from './features';
 import OpenMenu from '../Components/OpenMenu';
 import History from './History';
-
+import Vehicules from './Vehicules';
 
 import EventEmitter from "react-native-eventemitter";
 
@@ -70,6 +70,10 @@ const Service=()=> {
       switch(data){
         case 'History':
           setMenuOptions(<History/>)
+          break;
+        case 'Vehicules':
+          setMenuOptions(<Vehicules/>)
+          break;
       }
         
       
