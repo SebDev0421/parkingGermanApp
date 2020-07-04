@@ -86,23 +86,42 @@ export default class MenuDrawer extends React.Component{
                  </View>
                  <TouchableOpacity
                   style={styles.button}
+                  onPress={()=>{
+                      this.toogleMenu()
+                      setTimeout(()=>{EventEmitter.emit('Open','History')},500)
+                  }}
                  >
                    <Text>Historial</Text>  
                  </TouchableOpacity>
                  <TouchableOpacity
                   style={styles.button}
+                  onPress={()=>{
+                    this.toogleMenu()
+                    setTimeout(()=>{EventEmitter.emit('Open','Vehicules')},500)
+                }}
                  >
                    <Text>Mis vehiculos</Text>  
                  </TouchableOpacity>
                  <TouchableOpacity
                   style={styles.button}
+                  onPress={()=>{
+                    this.toogleMenu()
+                    setTimeout(()=>{EventEmitter.emit('Open','Settings')},500)
+                }}
                  >
                    <Text>Configuracion</Text>  
                  </TouchableOpacity>
-                 <TouchableOpacity style={styles.button}>
+                 <TouchableOpacity 
+                   style={styles.button}
+                   onPress={()=>{
+                    this.toogleMenu()
+                    setTimeout(()=>{EventEmitter.emit('Open','About')},500)
+                }}
+                   >
                    <Text>Acerca de</Text>  
                  </TouchableOpacity>
-                 <TouchableOpacity style={styles.button}>
+                 <TouchableOpacity 
+                  style={styles.button}>
                    <Text>Salir</Text>  
                  </TouchableOpacity>
              </Animated.View>   

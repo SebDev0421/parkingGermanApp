@@ -15,6 +15,8 @@ import MenuDrawer from '../Components/MenuDrawer';
 import DrawMaps from './DrawMaps';
 import Features from './features';
 import OpenMenu from '../Components/OpenMenu';
+import History from './History';
+
 
 import EventEmitter from "react-native-eventemitter";
 
@@ -39,9 +41,7 @@ const BottomTab = (props)=>{
        style={[styles.buttonsTab,tabBut ? styles.lineSelect : styles.lineunselect]}
        onPress={()=>{
          setTabBut(true)
-         props.screen(<Features
-          
-         />)
+         props.screen(<Features/>)
        }}
       >
         <Image 
@@ -58,10 +58,29 @@ const BottomTab = (props)=>{
 const Service=()=> {
   let [views, setView] = useState(<Features/>)
   let [menuDrawer,setMenuDrawer] = useState()
+  let [menuOpttions, setMenuOptions] = useState()
 
   useEffect(()=>{
     EventEmitter.on('CloseMenu',(data)=>{
       setMenuDrawer()
+    })
+
+    EventEmitter.on('Open',(data)=>{
+      console.log(data)
+      switch(data){
+        case 'History':
+          setMenuOptions(<History/>)
+      }
+        
+      
+    })
+
+    EventEmitter.on('close',(data)=>{
+      switch(data){
+        case 'History':
+          setMenuDrawer()
+          setMenuOptions()
+      }
     })
   },[])
     return (
@@ -76,13 +95,12 @@ const Service=()=> {
         <View style={{position:'absolute',top:15,left:40}}>
              <OpenMenu
                Open={()=>{
-                 setMenuDrawer(<MenuDrawer
-                 />)
+                 setMenuDrawer(<MenuDrawer/>)
                }}
              />
             </View>   
         {menuDrawer}
-
+        {menuOpttions}
       </View>
     );
   }
