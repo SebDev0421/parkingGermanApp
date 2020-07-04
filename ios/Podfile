@@ -87,6 +87,10 @@ target 'parkingApp' do
 
   pod 'react-native-pure-jwt', :path => '../node_modules/react-native-pure-jwt'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing

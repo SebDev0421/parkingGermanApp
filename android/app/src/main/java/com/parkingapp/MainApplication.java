@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.zaguiini.RNPureJwt.RNPureJwtPackage;
 import ui.notificationbanner.RNNotificationBannerPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;

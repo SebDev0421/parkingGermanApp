@@ -11,14 +11,16 @@ import{
     TouchableWithoutFeedback
 } from 'react-native';
 
+import EventEmitter from "react-native-eventemitter";
 
 export default class MenuDrawer extends React.Component{
 
-    animation = new Animated.Value(0)
+    animation = new Animated.Value(0);
+
+    
 
     toogleMenu = ()=>{
         const toValue = this.open ? 0 : 1;
-
         Animated.spring(this.animation,{
             toValue,
             friction:5
@@ -34,6 +36,7 @@ export default class MenuDrawer extends React.Component{
     
     componentDidMount(){
         this.toogleMenu()
+        
     }
     
     render(){
@@ -61,7 +64,8 @@ export default class MenuDrawer extends React.Component{
              <TouchableWithoutFeedback
                 onPress={()=>{
                     this.toogleMenu()
-                    this.props.closeMenu()
+                    setTimeout(()=>{EventEmitter.emit('CloseMenu','close')},500)
+                    
                 }}
              >
                  <View

@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect,useState}from 'react';
 import{
     View,
     Text,
@@ -10,18 +10,41 @@ import{
     Dimensions
 }from 'react-native';
 
-import MapboxGL from '@react-native-mapbox-gl/maps';
 
-MapboxGL.setAccessToken('pk.eyJ1Ijoic2Via2lsbGVyMDQyMSIsImEiOiJjanppdmd3cjEwM2pzM2NwcDl5eDhybjkzIn0.gnjw9ThqB1MPnxSYeMXojg')
-
+import Geolocation from '@react-native-community/geolocation';
  
+import MapView,{PROVIDER_GOOGLE} from 'react-native-maps' 
+ 
+const Parkings = [[-74.1110915,4.5780739],[-74.112752,4.5795639],[-74.1153929,4.5782252]]
+
 
 const DrawMaps = ()=>{
+  let [lat,setLat] = useState(4.577)
+  let [lng,setLng] = useState(-74.11)
+    useState(()=>{
+      Geolocation.getCurrentPosition((info)=>{
+        console.log(info)
+        setLat(info.coords.latitude)
+        setLng(info.coords.longitude)
+      })
+    },[])
+
     return(
         <View style={styles.page}>
-          <MapboxGL.MapView 
-           style={styles.map} 
-          />
+          <MapView
+           provider={PROVIDER_GOOGLE}
+           style={styles.map}
+           region={{
+            latitude: lat,
+            longitude : lng,
+            latitudeDelta: 0.009,
+            longitudeDelta : 0.035,
+            
+          }}
+          showsUserLocation={true}
+          >
+
+          </MapView>
         </View>
     )
 }
@@ -36,5 +59,6 @@ const styles = StyleSheet.create({
         height:'100%'
       }
 });
+
 
 export default DrawMaps;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 
 import{
     View,
@@ -15,6 +15,8 @@ import MenuDrawer from '../Components/MenuDrawer';
 import DrawMaps from './DrawMaps';
 import Features from './features';
 import OpenMenu from '../Components/OpenMenu';
+
+import EventEmitter from "react-native-eventemitter";
 
 const BottomTab = (props)=>{
   let [tabBut,setTabBut] = useState(true)
@@ -57,6 +59,11 @@ const Service=()=> {
   let [views, setView] = useState(<Features/>)
   let [menuDrawer,setMenuDrawer] = useState()
 
+  useEffect(()=>{
+    EventEmitter.on('CloseMenu',(data)=>{
+      setMenuDrawer()
+    })
+  },[])
     return (
       <View>
         
@@ -70,7 +77,6 @@ const Service=()=> {
              <OpenMenu
                Open={()=>{
                  setMenuDrawer(<MenuDrawer
-                  children={()=>{ setMenuDrawer('')}}
                  />)
                }}
              />
