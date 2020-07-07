@@ -37,8 +37,8 @@ const DrawMaps = ()=>{
            region={{
             latitude: lat,
             longitude : lng,
-            latitudeDelta: 0.009,
-            longitudeDelta : 0.035,
+            latitudeDelta: 0.000050,
+            longitudeDelta : 0.00090,
             
           }}
           showsUserLocation={true}

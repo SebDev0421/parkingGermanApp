@@ -91,6 +91,10 @@ target 'parkingApp' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing

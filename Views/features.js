@@ -5,7 +5,8 @@ import{
     TouchableOpacity,
     StyleSheet,
     Dimensions,
-    AsyncStorage
+    AsyncStorage,
+    Image
 } from 'react-native';
 
 import wifi from 'react-native-android-wifi';
@@ -15,6 +16,9 @@ import BackgroundTimer from 'react-native-background-timer';
 import jwt from "react-native-pure-jwt";
 
 import { cos } from 'react-native-reanimated';
+import ScanQr from './scanQr';
+
+import EventEmmitter from 'react-native-eventemitter';
 
 let flag = 0
 
@@ -145,7 +149,17 @@ const PrymaryView = (props)=>{
              }}
              style={styles.ButtonLogin}
             >
-                <Text style={{color:'white'}}>Conectate</Text>
+                <Text style={{color:'white'}}>Conectate   </Text>
+                <Image source={require('../Images/conectate.png')} style={{width:30, height:30}}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+             onPress={()=>{
+               props.OpenQr()
+             }}
+             style={styles.ButtonLogin}
+            >
+                <Text style={{color:'white'}}>Escanear  </Text>
+                <Image source={require('../Images/qr.png')} style={{width:30, height:30}}/>
             </TouchableOpacity>
             </View>
             </View>
@@ -212,6 +226,7 @@ const Clocks = (props)=>{
 
 const Features = (props)=>{
   let [refrehs, setRefresh] = useState()
+  let [QrView, setQrView] = useState()
   useEffect(()=>{
     function OpenClokc(data){
       
@@ -237,10 +252,24 @@ const Features = (props)=>{
     }
 
     function openPrymary(){
-        setRefresh(<PrymaryView/>)
-      
+        setRefresh(<PrymaryView
+         OpenQr = {()=>{
+           openQr()
+         }}
+        />)
     }
 
+    function openQr(){
+      setQrView(<ScanQr/>)
+    }
+
+    EventEmmitter.on('QrClose',()=>{
+      setQrView()
+    })
+    EventEmmitter.on('QrRead',(data)=>{
+      console.log(data)
+      setQrView()
+    })
 
     BackgroundTimer.setInterval(async()=>{
       
@@ -248,7 +277,7 @@ const Features = (props)=>{
       const parametersParse = JSON.parse(parameters)
       const dateActual = new Date()
       const hoursActual = dateActual.getHours()
-      const minutesActual = dateActual.getMinutes()
+      const minutesActual = dateActual.getMinutes() 
       if(parameters !== null){
        const dhB = (hoursActual*100+minutesActual)-(parametersParse.hourInit*100+parametersParse.minuteInit)
        const hourTime = parseInt(dhB/100)
@@ -266,8 +295,8 @@ const Features = (props)=>{
   },[])
     return(
         <View>
-          
           {refrehs}
+          {QrView}
         </View>
     )
 }
@@ -285,7 +314,8 @@ const styles = StyleSheet.create({
         borderRadius:10,
         backgroundColor:'#770BC2',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        flexDirection:'row'
     },
     ButtonRegister:{
         width:'80%',
