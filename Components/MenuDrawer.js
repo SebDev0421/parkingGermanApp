@@ -65,7 +65,6 @@ export default class MenuDrawer extends React.Component{
                 onPress={()=>{
                     this.toogleMenu()
                     setTimeout(()=>{EventEmitter.emit('CloseMenu','close')},500)
-                    
                 }}
              >
                  <View
