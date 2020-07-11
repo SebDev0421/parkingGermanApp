@@ -9,15 +9,40 @@ import{
     Image,
     Dimensions,
     ScrollView,
-    Animated
+    Animated,
+    AsyncStorage,
+    ToastAndroid
 }from 'react-native';
 
 import EventEmmitter from 'react-native-eventemitter';
 
-const LoginAPI = ()=>{
-    console.log('fetch to API')
-}
+import jwt from 'react-native-pure-jwt';
 
+import {
+    GoogleSignin, statusCodes
+} from '@react-native-community/google-signin';
+
+GoogleSignin.configure();
+
+
+const signIn = async ()=>{
+    try{
+        await GoogleSignin.hasPlayServices()
+        const userInfo = await GoogleSignin.signIn()
+        console.log(userInfo)
+        EventEmmitter.emit('google',userInfo)
+    }catch(e){
+        if(e.code === statusCodes.SIGN_IN_CANCELLED){
+            //user cancelled
+        }else if(e.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE){
+            //pay service not available
+        }else if(e.code === statusCodes.IN_PROGRESS){
+            //in progress service
+        }else{
+            //anithing happened
+        }
+    }
+}
 
 let valueHide = 1,
     valueRadius = 1,
@@ -73,6 +98,55 @@ const pinStyle={
     ]
 }
 
+const URI = 'http://192.168.1.103:3000/ParkingApp/API/99042101849'
+const KEY_API = '99042101849'
+const ApiRegister = async (token,photo,data)=>{
+    try{
+        await AsyncStorage.setItem('datesUser',JSON.stringify({email:data.email,photo:photo,giveName:data.giveName}))
+      }catch(e){
+          console.log(e)
+      }
+    
+    fetch(URI+'/registre/app',{
+        method:'PUT',
+        body:JSON.stringify(token),
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    }).then(res => res.json())
+      .then(res =>{
+          console.log(res)
+          jwt.decode(res.token,KEY_API,{
+            skipValidation: true // to skip signature and exp verification
+          }).then(async (e)=>{
+              console.log(e)
+              if(e.payload.status === 'user created'){
+                  // user created first time
+                  console.log(data.email)
+                  try{
+                   await AsyncStorage.setItem('datesUser',JSON.stringify({email:data.email,photo:photo,giveName:data.giveName}))
+                  }catch(e){
+                      console.log(e)
+                  }
+                  EventEmmitter.emit('logIn',true)
+              }else if( e.payload.status === 'error'){
+                  console.log('err')
+              }else{
+                try{
+                    await AsyncStorage.setItem('datesUser',JSON.stringify({email:data.email,photo:photo,giveName:data.giveName}))
+                  }catch(e){
+                      console.log(e)
+                  }
+                  EventEmmitter.emit('logIn',true)
+              }
+          })
+      })
+      .catch(e => {
+          if(e) throw e
+          return 'error connection'
+      })
+
+}
 
 const LoginPrimary = (props)=> {
     return(
@@ -97,8 +171,6 @@ const LoginPrimary = (props)=> {
                      valueLogin=1
                      hide()
                      EventEmmitter.emit('loginChange',true)
-                     /* props.openService() */
-                     
                  }}
                 >
                 <View style={styles.Button}>
@@ -111,23 +183,12 @@ const LoginPrimary = (props)=> {
                 }}>
                     <TouchableOpacity
                  onPress={()=>{
-
+                     signIn()
                  }}
                 >
                 <View style={{...styles.Button}}>
                     <Text style={{fontSize:17,fontWeight:'bold'}}>Ingresar con Google</Text>
                     <Image source={require('../Images/google.png')} style={{width:30,height:30,marginHorizontal:10}}/>
-                </View>
-                </TouchableOpacity>
-                </Animated.View>
-                
-                <Animated.View style={{
-                    opacity:fadeAnim
-                }}>
-                    <TouchableOpacity>
-                <View style={{...styles.Button,backgroundColor:'#2E71DC'}}>
-                    <Text style={{fontSize:17,fontWeight:'bold',color:'white'}}>Ingresar con facebook</Text>
-                    <Image source={require('../Images/facebook.png')} style={{width:30,height:30,marginHorizontal:10}}/>
                 </View>
                 </TouchableOpacity>
                 </Animated.View>
@@ -139,10 +200,9 @@ const LoginPrimary = (props)=> {
 
 
 const Login = (props)=>{
-    let [viewLog,setViewLog] = useState()
+    let [viewLog,setViewLog] = useState(<LoginPrimary/>)
 
     useEffect(()=>{
-        setViewLog(<LoginPrimary/>)
 
         EventEmmitter.on('loginChange',()=>{
             console.log('here')
@@ -150,6 +210,24 @@ const Login = (props)=>{
                 setViewLog()
             },1000)
         })
+
+        EventEmmitter.on('google',async (data)=>{
+            /*props.openService()*/
+            const APIdates = {
+                email: data.user.email,
+                giveName: data.user.givenName,
+                platform:'google',
+                password: data.user.id
+            }
+            jwt.sign(APIdates,'99042101849',{alg:"HS256"}).then((token=>{
+                ApiRegister({token:token},data.user.photo,APIdates)        
+               })).catch(console.error)
+        })
+
+        EventEmmitter.on('logIn',()=>{
+            props.openService()
+        })
+
     },[])
     return(
         <ScrollView>

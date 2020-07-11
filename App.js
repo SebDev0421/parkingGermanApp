@@ -7,7 +7,8 @@ import {
   Text,
   StatusBar,
   PermissionsAndroid,
-  Button
+  Button,
+  AsyncStorage
 } from 'react-native';
 
 
@@ -41,7 +42,19 @@ if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 } else {
     // Permission denied
 }
-    setTimeout(()=>{login()},2000)
+    setTimeout(async ()=>{
+      try{
+        const datesUser = await AsyncStorage.getItem('datesUser')
+        console.log(datesUser)
+        if(datesUser === null){
+          login()
+        }else{
+          steps()
+        }
+      }catch(e){
+  
+      }
+      },2000)
     
     function login(){
       setView(<Login

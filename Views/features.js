@@ -129,10 +129,21 @@ async function EventOutput(ws) {
 }
 
 const PrymaryView = (props)=>{
+  let [nameUser,setNameUser] = useState()
+  useEffect(()=>{
+    const getDates = async ()=>{
+      const data = await AsyncStorage.getItem('datesUser')
+      console.log(data)
+     const userData = JSON.parse(data)
+     setNameUser(userData.giveName)
+    }
+    
+    getDates()
+  },[])
   return(
     <View style={styles.ContainerButton}>
     <View style={styles.RadiusWallp}>
-            <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>Hola Juan Conectate a un parqueadero</Text>
+            <Text style={{color:'white',fontSize:14,fontWeight:'bold'}}>Hola {nameUser} Conectate a un parqueadero</Text>
           </View>
             <View>
             <View>
@@ -227,6 +238,7 @@ const Clocks = (props)=>{
 const Features = (props)=>{
   let [refrehs, setRefresh] = useState()
   let [QrView, setQrView] = useState()
+  
   useEffect(()=>{
     function OpenClokc(data){
       
@@ -270,6 +282,7 @@ const Features = (props)=>{
       console.log(data)
       setQrView()
     })
+    
 
     BackgroundTimer.setInterval(async()=>{
       

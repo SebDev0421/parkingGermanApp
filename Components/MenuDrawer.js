@@ -76,7 +76,7 @@ export default class MenuDrawer extends React.Component{
              >
                  <View style={styles.containerProfile}>
                      <ImageBackground source={require('../Images/chesser.jpg')} style={{flex:1,resizeMode: "cover",justifyContent: "center",alignItems:'center'}}>
-                     <Image source={require('../Images/joy.jpg')}
+                     <Image source={{uri:'https://lh3.googleusercontent.com/a-/AOh14GjbiqBUJ5IZgZ99iQTb7ePzBVgbzKoRlF-aSkn1Bg'}}
                             style={{width:120,height:120,marginVertical:20,borderRadius:120/2}}
                      />
                      <Text style={styles.textProfile}>Hola</Text>
