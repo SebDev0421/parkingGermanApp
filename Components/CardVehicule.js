@@ -1,4 +1,4 @@
-import React,{useEffect,} from 'react';
+import React,{useEffect,useState} from 'react';
 import{
     View,
     Text,
@@ -9,8 +9,30 @@ import{
     Image
 } from 'react-native';
 
+import jwt from 'react-native-pure-jwt'
+
+const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const KEY_API = '99042101849'
+
+
+
+const APIdeleteVehicule = (data)=>{
+    fetch(URI+'/vehicules/delete/app',{
+        method:'PUT',
+        body:JSON.stringify(data),
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    }).then(res=>{res.json()})
+      .then(res=>{console.log(res)})
+      .catch(e=>{console.log(e)})
+}
 
 const CardVehicule = (props)=>{
+    let [email,setEmail] = useState('')
+    useEffect(()=>{
+        setEmail(props.email)
+    },[])
     return(
         <View style={styles.container}>
             <View style={styles.TitleContainer}>
@@ -26,6 +48,12 @@ const CardVehicule = (props)=>{
                 <Image source={require('../Images/editar.png')} style={styles.delete}/>
             </TouchableOpacity>
             <TouchableOpacity
+             onPress={()=>{
+                 jwt.sign({email:email,idVehicule:props.placa},KEY_API,{alg:'HS256'})
+                    .then(token=>{
+                        APIdeleteVehicule({token:token})
+                    })
+             }}
              style={{width:30,height:30,position:'absolute',bottom:8,right:4}}
             >
                 <Image source={require('../Images/basura.png')} style={styles.delete}/>

@@ -98,7 +98,7 @@ const pinStyle={
     ]
 }
 
-const URI = 'http://192.168.1.103:3000/ParkingApp/API/99042101849'
+const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
 const ApiRegister = async (token,photo,data)=>{
     try{

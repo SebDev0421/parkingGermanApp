@@ -1,4 +1,4 @@
-import React,{useEffect,} from 'react';
+import React,{useEffect,useState} from 'react';
 import{
     View,
     Text,
@@ -6,29 +6,46 @@ import{
     ScrollView,
     StyleSheet,
     Dimensions,
-    Image
+    Image,
+    AsyncStorage
 } from 'react-native';
+
+import jwt from 'react-native-pure-jwt'
 
 import EventEmitter from "react-native-eventemitter";
 import CardHistory from '../Components/CardHistory';
 import CardVehicule from '../Components/CardVehicule';
 
-const DataHistory=[{
-    Placa:'xlc789',
-    Tipo:'Carro',
-    marca:'Chevrolet'
-},{
-    Placa:'dfc761',
-    Tipo:'Carro',
-    marca:'Renult'
-},
-{
-    Placa:'tye65t',
-    Tipo:'Moto',
-    marca:'Honda'
-}]
+const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const KEY_API = '99042101849'
 
 const Vehicules = ()=>{
+    let [vehiculesObj,setVehiculesObj] = useState([])
+    useEffect(()=>{
+        
+        const getDatesUser = async ()=>{
+            const dates = await AsyncStorage.getItem('datesUser')
+            const datesParse = JSON.parse(dates)
+            jwt.sign({email:datesParse.email},KEY_API,{alg:'HS256'})
+                         .then(token=>{
+                            fetch(URI+'/vehicules/read/app',{
+                                method:'PUT',
+                                body:JSON.stringify({token:token}),
+                                headers:{
+                                    'Content-Type': 'application/json'
+                                }
+                            }).then(res => res.json())
+                              .then(res=>{
+                                  setVehiculesObj(res)
+                              })
+                              .catch(e=>{console.log})
+                         })
+        }
+        
+        getDatesUser()
+        
+        
+    },[])
     return(
         <View style={style.container}>
             <View style={style.header}>
@@ -46,11 +63,17 @@ const Vehicules = ()=>{
             </View>
             <View style={style.scrollHistory}>
             <ScrollView >
-                {DataHistory.map(data=>{
+                {vehiculesObj.map(data=>{
+                    const auxType = 'carro'
+                    if(data.type ===2){
+                        auxType = 'moto'
+                    }
                     return(
+                        
                         <CardVehicule
-                         placa={data.Placa}
-                         type={data.Tipo}
+                         email={data.email}
+                         placa={data.idVehicule}
+                         type={auxType}
                          marca = {data.marca}
                         />
                     )

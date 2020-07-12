@@ -8,7 +8,8 @@ import{
     Image,
     Animated,
     ImageBackground,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    AsyncStorage
 } from 'react-native';
 
 import EventEmitter from "react-native-eventemitter";
@@ -31,12 +32,25 @@ export default class MenuDrawer extends React.Component{
 
     constructor(props){
         super(props)
-
+        this.state = {
+            imageUri:'',
+            giveName:''
+        }
     }
     
     componentDidMount(){
         this.toogleMenu()
+        const getDatesUser = async ()=>{
+            const dates = await AsyncStorage.getItem('datesUser')
+            const datesParse = JSON.parse(dates)
+            this.setState({
+                imageUri:datesParse.photo,
+                giveName:datesParse.giveName
+            })
+            
+        }
         
+        getDatesUser()
     }
     
     render(){
@@ -57,6 +71,7 @@ export default class MenuDrawer extends React.Component{
             outputRange: [0, 0 ,1]
         })
 
+
         return(
             <View
              style={styles.container}
@@ -76,11 +91,11 @@ export default class MenuDrawer extends React.Component{
              >
                  <View style={styles.containerProfile}>
                      <ImageBackground source={require('../Images/chesser.jpg')} style={{flex:1,resizeMode: "cover",justifyContent: "center",alignItems:'center'}}>
-                     <Image source={{uri:'https://lh3.googleusercontent.com/a-/AOh14GjbiqBUJ5IZgZ99iQTb7ePzBVgbzKoRlF-aSkn1Bg'}}
+                     <Image source={{uri:this.state.imageUri}}
                             style={{width:120,height:120,marginVertical:20,borderRadius:120/2}}
                      />
                      <Text style={styles.textProfile}>Hola</Text>
-                     <Text style={styles.textProfile}   >Juan Guerrero</Text>
+                     <Text style={styles.textProfile}>{this.state.giveName}</Text>
                      </ImageBackground>
                  </View>
                  <TouchableOpacity
