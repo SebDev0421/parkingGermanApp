@@ -13,7 +13,7 @@ import{
 import jwt from 'react-native-pure-jwt'
 
 import EventEmitter from "react-native-eventemitter";
-import CardHistory from '../Components/CardHistory';
+import PopUp from '../Components/PopUpAdd'
 import CardVehicule from '../Components/CardVehicule';
 
 const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
@@ -90,6 +90,7 @@ const Vehicules = ()=>{
                 </View>
             </TouchableOpacity>
             </View>
+            <PopUp/>
         </View>
     )
 }
