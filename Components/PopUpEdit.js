@@ -13,52 +13,65 @@ import{
 }from 'react-native'
 
 import RNPickerSelect from 'react-native-picker-select';
+import jwt from 'react-native-pure-jwt';
 
 import EventEmmitter from 'react-native-eventemitter';
 
-import jwt from 'react-native-pure-jwt';
-
-const animation = new Animated.Value(0)
 
 const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
-
-const APIvehiculesAdd = (data)=>{
-    
-    fetch(URI+'/vehicules/save/app',{
-        method:'PUT',
-        body:JSON.stringify(data),
-        headers:{'Content-Type': 'application/json'}
-    }).then(res => res.json())
-      .then(res => {console.log(res)
-        if(res.status === 'ok'){
-          alert('Vehiculo Agregado')
-          EventEmmitter.emit('addComplete',true)
-        }
-       }
-      )
-      .catch(e=>{console.log(e)})
-}
+const animation = new Animated.Value(0)
 
 const appear = ()=>{
     Animated.timing(
         animation,
         {
             toValue:1,
-            duration:700,
+            duration:1000,
         }
     ).start()
 }
 
-const PopUpAdd = (props)=>{
+
+const APIvehiculesEdit = (data)=>{
+    
+    fetch(URI+'/vehicules/overwrite/app',{
+        method:'PUT',
+        body:JSON.stringify(data),
+        headers:{'Content-Type': 'application/json'}
+    }).then(res => res.json())
+      .then(res => {console.log(res)
+        if(res.status === 'ok'){
+          alert('Edicion Completada')
+          EventEmmitter.emit('editComplete',true)
+        }
+       }
+      )
+      .catch(e=>{console.log(e)})
+}
+
+let emailOld = '',
+    placaOld = '',
+    typeOld = 1,
+    marcaOld = ''
+
+const PopUpEdit = (props)=>{
     let [selectPicker,setSelectPicker] = useState(1),
         [placa,setPlaca] = useState(''),
         [marca,setMarca] = useState(''),
-        [photo,setPhoto] = useState(),
         [email,setEmail] = useState('')
+    
+    
     useEffect(()=>{
         appear()
+        emailOld = props.emailGet
+        placaOld = props.placa
+        typeOld = props.type
+        marcaOld = props.marca
         setEmail(props.emailGet)
+        setMarca(props.marca)
+        setPlaca(props.placa)
+        setSelectPicker(props.type)
     },[])
     return(
         <View style={styles.container}>
@@ -81,22 +94,22 @@ const PopUpAdd = (props)=>{
                        </View>
                        <View style={{marginHorizontal:20,marginTop:10}}>
                        <Text style={styles.textBtnAdd}>
-                           Nuevo vehiculo
+                           Editar vehiculo
                        </Text>
                        </View>
                    </View>
                    <ScrollView style={styles.ScrollContainer}>
                        <View style={{alignItems:'center'}}>
                    <TextInput 
-            autoCapitalize={'characters'}
-            onChangeText={(value)=>{
-                if(value.length<7){
-                    setPlaca(value)
-                }
-            }}
-            value={placa}
-            style={styles.InputAdd}
-             placeholder='Placa de tu vehiculo'/>
+                     autoCapitalize={'characters'}
+                     onChangeText={(value)=>{
+                         if(value.length<7){
+                         setPlaca(value)
+                     }
+                    }}
+                    value={placa}
+                    style={styles.InputAdd}
+                     placeholder='Placa de tu vehiculo'/>
             <Text>Selecciona el tipo de vehiculo</Text>
             <View
              style={styles.InputAdd}
@@ -112,6 +125,8 @@ const PopUpAdd = (props)=>{
                   {label:'carro',value:1},
                   {label:'moto',value:2}
               ]}
+
+              value={selectPicker}
               
             />
             </View>
@@ -120,6 +135,7 @@ const PopUpAdd = (props)=>{
              onChangeText={(value)=>{
                  setMarca(value)
              }}
+             value={marca}
             style={styles.InputAdd}
              placeholder='Marca'/>
                        </View>
@@ -128,22 +144,28 @@ const PopUpAdd = (props)=>{
                      style={styles.BtnAdd}
                      onPress={()=>{
                         const data = {
+                           oldData:{
+                               email:emailOld,
+                               idVehicule:placaOld
+                           },
+                           newData:{
                             email:email,
                             idVehicule:placa,
                             type:selectPicker,
                             marca:marca
+                           }
                         }
                         jwt.sign(data,KEY_API,{alg:'HS256'}).then(token => {
                          const sendApi = {
                              token:token
                          }
-                         APIvehiculesAdd(sendApi)
+                         APIvehiculesEdit(sendApi)
                          
                       })
                      }}
                      >
                        <View>
-                           <Text style={styles.textBtnAdd}>Agregar vehiculo</Text>
+                           <Text style={styles.textBtnAdd}>Editar vehiculo</Text>
                        </View>
                    </TouchableOpacity>
                 </View>
@@ -212,4 +234,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default PopUpAdd
+export default PopUpEdit

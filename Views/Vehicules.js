@@ -13,19 +13,22 @@ import{
 import jwt from 'react-native-pure-jwt'
 
 import EventEmitter from "react-native-eventemitter";
-import PopUp from '../Components/PopUpAdd'
+import PopUpAdd from '../Components/PopUpAdd';
+import PopUpEdit from '../Components/PopUpEdit';
 import CardVehicule from '../Components/CardVehicule';
 
 const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
-
+let email = ''
 const Vehicules = ()=>{
-    let [vehiculesObj,setVehiculesObj] = useState([])
+    let [vehiculesObj,setVehiculesObj] = useState([]),
+        [openPopUp,setOpenPopUp] = useState()
     useEffect(()=>{
         
         const getDatesUser = async ()=>{
             const dates = await AsyncStorage.getItem('datesUser')
             const datesParse = JSON.parse(dates)
+            email = datesParse.email
             jwt.sign({email:datesParse.email},KEY_API,{alg:'HS256'})
                          .then(token=>{
                             fetch(URI+'/vehicules/read/app',{
@@ -36,7 +39,9 @@ const Vehicules = ()=>{
                                 }
                             }).then(res => res.json())
                               .then(res=>{
+                                  
                                   setVehiculesObj(res)
+                                  
                               })
                               .catch(e=>{console.log})
                          })
@@ -44,7 +49,38 @@ const Vehicules = ()=>{
         
         getDatesUser()
         
+        EventEmitter.on('closePopUp',()=>{
+            setOpenPopUp()
+        })
         
+        EventEmitter.on('openPopUp',(data)=>{
+            const sendApiProps = JSON.parse(data)
+            console.log(sendApiProps)
+            const type = 1
+            if(sendApiProps.type === 'moto'){
+                type = 2
+            }
+            setOpenPopUp(<PopUpEdit
+              emailGet={email}
+              placa={sendApiProps.placa}
+              type={type}
+              marca={sendApiProps.marca}
+            />) 
+        })
+
+        EventEmitter.on('deleteElement',()=>{
+            getDatesUser()
+        })
+
+        EventEmitter.on('editComplete',()=>{
+            setOpenPopUp()
+            getDatesUser()
+        })
+        
+        EventEmitter.on('addComplete',()=>{
+            setOpenPopUp()
+            getDatesUser()
+        })
     },[])
     return(
         <View style={style.container}>
@@ -83,6 +119,11 @@ const Vehicules = ()=>{
             <View style={style.containerButtonAdd}>
             <TouchableOpacity
              style={style.buttonAdd}
+             onPress={()=>{
+                setOpenPopUp(<PopUpAdd
+                  emailGet={email}
+                />)
+             }}
             >
                 <View style={{flexDirection:'row'}}>
                   <Text style={style.textButtonAdd}>Agregar vehiculo</Text>
@@ -90,7 +131,7 @@ const Vehicules = ()=>{
                 </View>
             </TouchableOpacity>
             </View>
-            <PopUp/>
+            {openPopUp}
         </View>
     )
 }

@@ -10,6 +10,7 @@ import{
 } from 'react-native';
 
 import jwt from 'react-native-pure-jwt'
+import EventEmmitter from 'react-native-eventemitter';
 
 const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
@@ -23,8 +24,12 @@ const APIdeleteVehicule = (data)=>{
         headers:{
             'Content-Type': 'application/json'
         }
-    }).then(res=>{res.json()})
-      .then(res=>{console.log(res)})
+    }).then(function(res){return res.json()})
+      .then(res=>{
+          console.log(res)
+          if(res.status === 'ok')
+          EventEmmitter.emit('deleteElement',true)
+        })
       .catch(e=>{console.log(e)})
 }
 
@@ -44,6 +49,9 @@ const CardVehicule = (props)=>{
             </View>
             <TouchableOpacity
              style={{width:30,height:30,position:'absolute',bottom:50,right:4}}
+             onPress={()=>{
+                 EventEmmitter.emit('openPopUp',JSON.stringify({placa:props.placa,type:props.type,marca:props.marca}))
+             }}
             >
                 <Image source={require('../Images/editar.png')} style={styles.delete}/>
             </TouchableOpacity>
