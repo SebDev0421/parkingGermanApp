@@ -45,7 +45,7 @@ const AddTargetPay = ()=>{
     )
 }
 
-const Settings = ()=>{
+const CreditCard = ()=>{
     let [viewCard,setViewCard] = useState()
     useEffect(()=>{
       EventEmitter.on('closeAddTarjet',()=>{
@@ -64,7 +64,7 @@ const Settings = ()=>{
                  <Image source={require('../Images/espalda.png')} style={styles.ButonBack}/>
              </TouchableOpacity>
              <View style={{width:'100%',marginHorizontal:30}}>
-               <Text style={styles.textHeader}>Configuracion</Text>
+               <Text style={styles.textHeader}>Tarjetas</Text>
              </View>
             </View>
             <View style={{alignItems:'center',marginVertical:20}}>
@@ -72,34 +72,36 @@ const Settings = ()=>{
                 <View style={styles.containerTarjets}>
                 <TouchableOpacity style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
                     <View style={styles.addTarjet}>
-                    <Image source={require('../Images/usuario.png')} style={{width:45,height:45}}/>   
-                    <Text style={styles.TextCredit}>Perfil</Text>
+                    <Image source={require('../Images/money.png')} style={{width:45,height:45}}/>   
+                    <Text style={styles.TextCredit}>Davienda  ****04658</Text>
                     </View>
                  </TouchableOpacity>
                  <TouchableOpacity style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
                     <View style={styles.addTarjet}>
-                    <Image source={require('../Images/factura.png')} style={{width:45,height:45}}/>   
-                    <Text style={styles.TextCredit}>Facturacion</Text>
+                    <Image source={require('../Images/money.png')} style={{width:45,height:45}}/>   
+                    <Text style={styles.TextCredit}>Davienda  ****04658</Text>
                     </View>
                  </TouchableOpacity>
                  <TouchableOpacity style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
                     <View style={styles.addTarjet}>
-                    <Image source={require('../Images/bloquear.png')} style={{width:45,height:45}}/>   
-                    <Text style={styles.TextCredit}>Seguridad</Text>
+                    <Image source={require('../Images/money.png')} style={{width:45,height:45}}/>   
+                    <Text style={styles.TextCredit}>Davienda  ****04658</Text>
                     </View>
                  </TouchableOpacity>
                  <TouchableOpacity style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
                     <View style={styles.addTarjet}>
-                    <Image source={require('../Images/edificio-de-oficinas.png')} style={{width:45,height:45}}/>   
-                    <Text style={styles.TextCredit}>Ciudad</Text>
+                    <Image source={require('../Images/money.png')} style={{width:45,height:45}}/>   
+                    <Text style={styles.TextCredit}>Davienda  ****04658</Text>
                     </View>
                  </TouchableOpacity>
                  <TouchableOpacity
-                  onPress={()=>{}}
+                  onPress={()=>{
+                      setViewCard(<AddTargetPay/>)
+                  }}
                  >
                     <View style={styles.addTarjet}>
-                    <Image source={require('../Images/Logo.png')} style={{width:45,height:45}}/>   
-                    <Text style={styles.TextCredit}>Quieres arrendar</Text>
+                    <Image source={require('../Images/tarjeta-de-credito.png')} style={{width:45,height:45}}/>   
+                    <Text style={styles.TextCredit}>Nueva tarjeta</Text>
                     </View>
                  </TouchableOpacity>
                 </View>                
@@ -172,4 +174,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Settings;
+export default CreditCard;

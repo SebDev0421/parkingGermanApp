@@ -279,10 +279,18 @@ const Features = (props)=>{
       setQrView()
     })
     EventEmmitter.on('QrRead',(data)=>{
-      console.log(data)
+    try{
+      jwt.decode(data.data,'1234567890',{skipValidation:true}).then(e=>{
+        console.log(e.payload.data.ssid)
+        
+      })
+    }catch(e){
+      console.log(e)
+    }
       setQrView()
     })
     
+
 
     BackgroundTimer.setInterval(async()=>{
       

@@ -22,6 +22,7 @@
     "react-native-android-wifi": "0.0.41",
     "react-native-background-timer": "^2.2.0",
     "react-native-camera": "^3.31.0",
+    "react-native-credit-card-input": "^0.4.1",
     "react-native-eventemitter": "0.0.1",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-input-outline": "^1.0.2",

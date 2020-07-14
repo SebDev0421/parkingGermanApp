@@ -129,12 +129,29 @@ export default class MenuDrawer extends React.Component{
                    style={styles.button}
                    onPress={()=>{
                     this.toogleMenu()
+                    setTimeout(()=>{EventEmitter.emit('Open','Credit')},500)
+                   }}
+                   >
+                   <Text>Tarjetas de credito</Text>  
+                 </TouchableOpacity>
+                 <TouchableOpacity 
+                   style={styles.button}
+                   onPress={()=>{
+                    this.toogleMenu()
                     setTimeout(()=>{EventEmitter.emit('Open','About')},500)
                 }}
                    >
                    <Text>Acerca de</Text>  
                  </TouchableOpacity>
                  <TouchableOpacity 
+                  onPress={async ()=>{
+                      try{
+                          await AsyncStorage.setItem('datesUser','')
+                          EventEmitter.emit('closeService',true)
+                      }catch(e){
+                          console.log(e)
+                      }
+                  }}
                   style={styles.button}>
                    <Text>Salir</Text>  
                  </TouchableOpacity>

@@ -17,6 +17,9 @@ import Features from './features';
 import OpenMenu from '../Components/OpenMenu';
 import History from './History';
 import Vehicules from './Vehicules';
+import CreditCard from './CreditCard';
+import Settings from './Settings';
+import About from './About';
 
 import EventEmitter from "react-native-eventemitter";
 
@@ -73,6 +76,15 @@ const Service=()=> {
           break;
         case 'Vehicules':
           setMenuOptions(<Vehicules/>)
+          break;
+        case 'Credit':
+          setMenuOptions(<CreditCard/>)
+          break;
+        case 'Settings':
+          setMenuOptions(<Settings/>)
+          break;
+        case 'About':
+          setMenuOptions(<About/>)
           break;
       }
         
