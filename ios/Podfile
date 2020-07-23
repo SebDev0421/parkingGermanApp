@@ -95,6 +95,8 @@ target 'parkingApp' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'parkingAppTests' do
     inherit! :complete
     # Pods for testing

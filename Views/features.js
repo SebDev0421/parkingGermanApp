@@ -14,13 +14,21 @@ import wifi from 'react-native-android-wifi';
 import FloatingButton from '../Components/FloatingButton';
 import BackgroundTimer from 'react-native-background-timer';
 import jwt from "react-native-pure-jwt";
+import SetAlert from '../Components/SetAlert'
 
 import { cos } from 'react-native-reanimated';
 import ScanQr from './scanQr';
 
+
 import EventEmmitter from 'react-native-eventemitter';
+import {LocalNotification} from '../src/LocalPushNotification';
+
+
 
 let flag = 0
+const dateNow = new Date()
+const HourOpenApp = dateNow.getTime()
+
 
 
 async function processData(data){
@@ -35,7 +43,7 @@ async function processData(data){
     }
   ).then(async (e)=>{
     const date = new Date()
-    const parameters= JSON.stringify({status:'[ACTIVE]',hourInit:date.getHours(),minuteInit:date.getMinutes(),tariff:65,lot:e.building,address:e.address_one})
+    const parameters= JSON.stringify({status:'[ACTIVE]',hourInit:date.getHours(),minuteInit:date.getMinutes(),time:date.getTime(),tariff:65,lot:e.building,address:e.address_one})
     try{
         await AsyncStorage.setItem('services',parameters)
     }catch(error){
@@ -206,7 +214,7 @@ const Clocks = (props)=>{
             <View>
             <TouchableOpacity
              onPress={async()=>{
-             
+              /*
               wifi.findAndConnect("NidooAP",'12345678',async (found)=>{
                                 if(found){
                                     const date = new Date()
@@ -215,19 +223,37 @@ const Clocks = (props)=>{
                                     
                                 }else{
                                     console.log('wifi is not in range')
+                                    Alert('No te encuentras cerca a ningun parqueadero')
                                     try{
                                       await AsyncStorage.setItem('services','')
                                     }catch(e){
                                       console.log(e)
                                     }
                                 }
-                            })
+                            })*/
+                            EventEmmitter.emit('openPayForm',true)
              }}
              style={styles.buttonPay}
             >
                 <Text style={{color:'white'}}>Pagar</Text>
+                <Image source={require('../Images/mano.png')} style={{width:35,height:35,marginHorizontal:10}}/>
             </TouchableOpacity>
             </View>
+            </View>
+            <View
+             style={{
+               position:'absolute',
+               top:20,
+               right:10
+             }}
+            >
+              <TouchableOpacity
+               onPress={()=>{
+                EventEmmitter.emit('openSetAlert',true)
+               }}
+              >
+                <Image source={require('../Images/notificacion.png')} style={{width:40,height:40}}/>
+              </TouchableOpacity>
             </View>
             </View>
 )
@@ -238,10 +264,13 @@ const Clocks = (props)=>{
 const Features = (props)=>{
   let [refrehs, setRefresh] = useState()
   let [QrView, setQrView] = useState()
+  let [alertView, setAlertView] = useState()
   
   useEffect(()=>{
+
+    
+
     function OpenClokc(data){
-      
     if(data !== null){
       const dates = JSON.parse(data)
       const dateActully = new Date()
@@ -275,6 +304,11 @@ const Features = (props)=>{
       setQrView(<ScanQr/>)
     }
 
+    EventEmmitter.on('openSetAlert',()=>{
+      console.log('open')
+      setAlertView(<SetAlert/>)
+    })
+
     EventEmmitter.on('QrClose',()=>{
       setQrView()
     })
@@ -283,6 +317,31 @@ const Features = (props)=>{
       jwt.decode(data.data,'1234567890',{skipValidation:true}).then(e=>{
         console.log(e.payload.data.ssid)
         
+             
+        wifi.findAndConnect("NidooAP",'12345678',async (found)=>{
+                            if(found){
+                                const date = new Date()
+                                console.log('Wifi is in range')
+                                setTimeout(()=>{connectedWebSocket()},2000) 
+                                
+                            }else{
+                                console.log('wifi is not in range')
+                                //alert('No hay ningun parqueadero cerca')
+                                const date = new Date()
+                                const parameters= JSON.stringify({status:'[ACTIVE]',hourInit:date.getHours(),minuteInit:date.getMinutes(),time:date.getTime(),tariff:65,lot:'',address:''})
+                                try{
+                                  await AsyncStorage.setItem('services',parameters)
+                                }catch(error){
+                                  console.log(error)
+                                }
+                                /* try{
+                                  await AsyncStorage.setItem('services','')
+                                }catch(e){
+                                  console.log(e)
+                                } */
+                            }
+        })
+         
       })
     }catch(e){
       console.log(e)
@@ -290,34 +349,50 @@ const Features = (props)=>{
       setQrView()
     })
     
+    EventEmmitter.on('closeSetAlert',()=>{
+      setAlertView()
+    })
 
 
     BackgroundTimer.setInterval(async()=>{
       
       const parameters = await AsyncStorage.getItem('services')
       const parametersParse = JSON.parse(parameters)
-      const dateActual = new Date()
-      const hoursActual = dateActual.getHours()
-      const minutesActual = dateActual.getMinutes() 
+      const moneyMax = await AsyncStorage.getItem('moneyMax')
+      
       if(parameters !== null){
-       const dhB = (hoursActual*100+minutesActual)-(parametersParse.hourInit*100+parametersParse.minuteInit)
-       const hourTime = parseInt(dhB/100)
-       const minutesTime = parseInt(((dhB/100)-hourTime)*100)
-       const cB = parseInt((hourTime*60+minutesTime)*parametersParse.tariff)
+        const dateActual = new Date()
+        const opDate = parseInt((dateActual.getTime()-parametersParse.time)/60000)
+        const hourClock = parseInt(opDate/60)
+        const minutesClock = opDate - (hourClock*60)
+        const cB = parseInt(opDate*parametersParse.tariff)
+        if(parseInt(moneyMax) !== NaN){
+          if((cB) > parseInt(moneyMax)*0.9){
+            const deltaMoney =  parseInt(moneyMax) - (cB)
+            LocalNotification(deltaMoney.toString())
+            try{
+              await AsyncStorage.setItem('moneyMax','')
+            }catch(e){
+              console.log(e)
+            }
+          }
+        }
        setRefresh(<Clocks
-        hour={hourTime}
-        minutes={minutesTime}
+        hour={hourClock}
+        minutes={minutesClock}
         cost={cB}
        />)
       }else{
         openPrymary()
       }
+
     },1000)
   },[])
     return(
         <View>
           {refrehs}
           {QrView}
+          {alertView}
         </View>
     )
 }
@@ -369,7 +444,8 @@ const styles = StyleSheet.create({
       borderRadius:10,
       backgroundColor:'#1E6093',
       alignItems:'center',
-      justifyContent:'center'
+      justifyContent:'center',
+      flexDirection:'row'
     },
     DatesShow:{
       marginVertical:20,

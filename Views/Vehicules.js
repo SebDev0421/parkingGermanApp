@@ -17,7 +17,7 @@ import PopUpAdd from '../Components/PopUpAdd';
 import PopUpEdit from '../Components/PopUpEdit';
 import CardVehicule from '../Components/CardVehicule';
 
-const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const URI = 'http://181.54.182.7:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
 let email = ''
 const Vehicules = ()=>{

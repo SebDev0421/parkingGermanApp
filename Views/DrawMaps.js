@@ -17,7 +17,7 @@ import MapView,{PROVIDER_GOOGLE, Marker} from 'react-native-maps'
 import jwt from 'react-native-pure-jwt';
 const Parkings = [[-74.1110915,4.5780739],[-74.112752,4.5795639],[-74.1153929,4.5782252]]
 
-const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const URI = 'http://181.54.182.7:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
 
 const DrawMaps = ()=>{

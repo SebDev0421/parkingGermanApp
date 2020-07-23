@@ -19,7 +19,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import EventEmitter from 'react-native-eventemitter';
 
 
-const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const URI = 'http://181.54.182.7:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
 
 const APIvehiculesAdd = (data)=>{

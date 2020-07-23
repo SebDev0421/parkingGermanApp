@@ -10,6 +10,7 @@ import{
 
 } from 'react-native';
 
+import PayHow from './PayHow'
 
 import MenuDrawer from '../Components/MenuDrawer';
 import DrawMaps from './DrawMaps';
@@ -87,8 +88,15 @@ const Service=()=> {
           setMenuOptions(<About/>)
           break;
       }
-        
+    })
+
+    EventEmitter.on('openPayForm',()=>{
       
+      setMenuOptions(<PayHow/>)
+    })
+
+    EventEmitter.on('closePayForm',()=>{
+      setMenuOptions()
     })
 
     EventEmitter.on('close',(data)=>{

@@ -22,7 +22,7 @@ import Steps from './Views/Steps'
 
 let count = 0
 
-const URI = 'http://192.168.1.67:3000/ParkingApp/API/99042101849'
+const URI = 'http://192.168.0.36:3000/ParkingApp/API/99042101849'
 const KEY_API = '99042101849'
 
 const App = () => {
