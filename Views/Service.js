@@ -92,7 +92,9 @@ const Service=()=> {
 
     EventEmitter.on('openPayForm',()=>{
       
-      setMenuOptions(<PayHow/>)
+      setMenuOptions(<PayHow
+       mount={25600}
+      />)
     })
 
     EventEmitter.on('closePayForm',()=>{

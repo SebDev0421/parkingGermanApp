@@ -6,7 +6,9 @@ import {
     TouchableOpacity,
     Image,
     Dimensions,
-    Text
+    Text,
+    TouchableNativeFeedback,
+    TextInput
 }from 'react-native'
 
 import {CreditCardInput,LiteCreditCardInput} from 'react-native-credit-card-input'
@@ -32,9 +34,16 @@ const AddTargetPay = ()=>{
     </View>
     
     <CreditCardInput
-              onChange={(data)=>{
-                  console.log(data)
+              onChange={(data)=>{  
+                console.log(data)
               }}
+              requiresName={true}
+              allowScroll = {true}
+              labels={{
+                number: "numero de tarjeta",
+                expiry:"Expiracion",
+                cvc:"CVC"
+            }}
             />
     <View style={{alignItems:'center'}}>
     <TouchableOpacity style={styles.AddButton}>
@@ -45,12 +54,63 @@ const AddTargetPay = ()=>{
     )
 }
 
-const PayHow = ()=>{
+const TargetPay = ()=>{
+    return(
+        <View style={styles.container}>
+    <View style={styles.header}>
+     
+     <TouchableOpacity
+      onPress={()=>{
+          EventEmitter.emit('closeAddTarjet',true)
+      }}
+     >
+         <Image source={require('../Images/espalda.png')} style={styles.ButonBack}/>
+     </TouchableOpacity>
+     <View style={{width:'100%',marginHorizontal:30}}>
+       <Text style={styles.textHeader}>Pagar con tarjeta</Text>
+     </View>
+    </View>
+    <View style={styles.addTarjet}>
+    <View style={styles.containerTarjets}>
+        <View style={{width:'100%',alignItems:'center'}}>
+          <Text style={styles.TextTitleDates}>Confirma los datos</Text>
+        </View>
+
+        <Text style={styles.TextSubTitleDates}>Nombre</Text>
+        <Text style={styles.TextDatesCard}>JUAN SEBASTIAN GUERRERO</Text>
+        <Text style={styles.TextSubTitleDates}>Numero de tarjeta</Text>
+        <Text style={styles.TextDatesCard}>400 5689 4723 9873</Text>
+        <Text style={styles.TextSubTitleDates}>Fecha de Expiracion</Text>
+        <Text style={styles.TextDatesCard}>12/25</Text>
+        <Text style={styles.TextSubTitleDates}>confirma CVC</Text>
+        <TextInput
+         placeholder = {'CVC'}
+         keyboardType={'number-pad'}
+         style={[styles.TextDatesCard,{borderBottomColor:'gray', borderBottomWidth:1,width:'30%',marginBottom:10, marginHorizontal:15}]}
+         onChangeText={(value)=>{
+
+         }}
+        />
+
+    </View>
+    </View>
+    <View style={{alignItems:'center'}}>
+    <TouchableOpacity style={styles.AddButton}>
+        <Text style={{fontWeight:'bold',color:'white'}}>Pagar parqueadero</Text>
+    </TouchableOpacity>
+    </View>
+    </View>
+    )
+}
+
+const PayHow = (props)=>{
     let [viewCard,setViewCard] = useState()
+    let [viewCardPay,setViewCardPay] = useState()
     useEffect(()=>{
       EventEmitter.on('closeAddTarjet',()=>{
           setViewCard()
-      })  
+          setViewCardPay()
+      })
     })
     return(
         <View style={styles.container}>
@@ -73,7 +133,11 @@ const PayHow = ()=>{
             >
                 <Text style={styles.TextIndicator}>Con tarjeta</Text>
                 <View style={styles.containerTarjets}>
-                <TouchableOpacity style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
+                <TouchableOpacity 
+                onPress={()=>{
+                    setViewCardPay(<TargetPay/>)
+                }}
+                style={{borderWidth:1,borderBottomColor:'#DBDBDB',borderTopColor:'rgba(255,255,255,0)',borderLeftColor:'rgba(255,255,255,0)',borderRightColor:'rgba(255,255,255,0)'}}>
                     <View style={styles.addTarjet}>
                     <Image source={require('../Images/money.png')} style={{width:45,height:45}}/>   
                     <Text style={styles.TextCredit}>Davienda  ****04658</Text>
@@ -109,11 +173,27 @@ const PayHow = ()=>{
                  </TouchableOpacity>
                 </View>  
             </ScrollView>
-            <View style={styles.footer}>
-                
             </View>
+            {viewCardPay}
+            <View style={styles.footer}>
+                <View>
+                <TouchableNativeFeedback
+                 onPress={()=>{
+                     console.log('open cupons')
+                 }}
+                >
+                    <Text style={{color:'blue', fontWeight:'100', marginVertical:9, marginHorizontal:15}}>¿Tienes cupones?</Text>
+                </TouchableNativeFeedback>
+                <Text style={{color:'gray',fontSize:18, fontWeight:'100', marginVertical:9, marginHorizontal:15}}>
+                    Pagas
+                </Text>
+                </View>
+                <View style={{position:'absolute',right:0}}>
+                 <Text style={{color:'gray',fontSize:24, fontWeight:'100', marginVertical:9, marginHorizontal:15}}>${props.mount}</Text>
+                </View>
             </View>
             {viewCard}
+            
         </View>
     )
 }
@@ -180,13 +260,31 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     footer:{
-       height:60,
+       position:'absolute',
        width:'100%',
-       backgroundColor:'white'
+       backgroundColor:'white',
+       bottom:25,
+       justifyContent:'center'
     },
     TextIndicator:{
         fontWeight:'bold',
         fontSize:15,
+        marginVertical:2
+    },
+    TextTitleDates:{
+        fontWeight:'bold',
+        fontSize:20,
+        marginVertical:15
+    },
+    TextSubTitleDates:{
+        fontWeight:'bold',
+        fontSize:17,
+        color:'gray',
+        marginHorizontal:10,
+        marginVertical:5
+    },
+    TextDatesCard:{
+        marginHorizontal:5,
         marginVertical:2
     }
 })
